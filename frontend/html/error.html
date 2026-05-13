@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Page Not Found - Deals Store</title>
+    <link rel="stylesheet" href="/frontend/css/style.css">
+    <style>
+        .error-wrapper {
+            height: 70vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+        }
+        .error-code {
+            font-size: 8rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, var(--primary), #ec4899);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            line-height: 1;
+            margin-bottom: 1rem;
+        }
+        .error-title {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--text-dark);
+            margin-bottom: 1rem;
+        }
+        .error-msg {
+            color: var(--text-muted);
+            font-size: 1.1rem;
+            margin-bottom: 2rem;
+            max-width: 400px;
+        }
+    </style>
+</head>
+<body>
+
+    <nav>
+        <div class="logo"><h2>🛒 Deals.</h2></div>
+        <div class="nav-links"><a href="index.html">Discover</a></div>
+    </nav>
+
+    <div class="container error-wrapper">
+        <div class="error-code">404</div>
+        <div class="error-title">Page not found</div>
+        <div class="error-msg">The page or deal you are looking for doesn't exist or has been removed.</div>
+        
+        <a href="index.html" class="btn-primary" style="text-decoration: none; max-width: 200px;">Return Home</a>
+    </div>
+
+</body>
+</html>

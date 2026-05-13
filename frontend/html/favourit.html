@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Wishlist - Deals Store</title>
+    <link rel="stylesheet" href="/frontend/css/style.css">
+</head>
+<body>
+
+    <!-- Premium Navbar -->
+    <nav>
+        <div class="logo">
+            <h2>🛒 Deals.</h2>
+        </div>
+        <div class="nav-links">
+            <a href="index.html">Discover</a>
+            <a href="favourit.html" style="color: var(--primary); font-weight: 700;">Wishlist</a>
+            <span id="nav-welcome" style="margin-left: 1rem;"></span>
+            <button id="nav-logout" style="display: none; margin-left: 1rem;" onclick="handleLogout()">Sign Out</button>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <div class="container">
+        <h2 style="font-size: 1.8rem; margin-bottom: 2rem; color: var(--text-dark);">Your Wishlist</h2>
+        
+        <div id="favorites-container" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 2.5rem;">
+            <!-- JavaScript will inject favorite cards here -->
+        </div>
+    </div>
+
+    <script src="/frontend/js/app.js"></script>
+    <script>
+        // Custom script to load only favorites with the NEW premium card design
+        document.addEventListener('DOMContentLoaded', async () => {
+            const container = document.getElementById('favorites-container');
+            
+            if (!currentUser) {
+                container.innerHTML = '<p style="text-align:center; width:100%; color: var(--text-muted);">Please <a href="login.html" style="color: var(--primary);">sign in</a> to view your saved deals.</p>';
+                return;
+            }
+
+            container.innerHTML = '<p style="text-align:center; width:100%; color: var(--text-muted);">Loading your wishlist...</p>';
+
+            try {
+                const response = await fetch(`${API_BASE}/favorites.php?user_id=${currentUser.id}`);
+                const result = await response.json();
+
+                if (result.data && result.data.length > 0) {
+                    container.innerHTML = ''; 
+                    
+                    result.data.forEach(offer => {
+                        const card = document.createElement('div');
+                        card.className = 'offer-card';
+                        card.innerHTML = `
+                            <img src="${offer.image_url}" alt="${offer.title}">
+                            <div class="offer-details">
+                                <h3>${offer.title}</h3>
+                                <p>${offer.description}</p>
+                                <span class="category">${offer.category}</span>
+                                <div class="price-box">
+                                    <span class="final-price">$${offer.final_price}</span>
+                                    <span class="old-price">$${offer.old_price}</span>
+                                    <span class="badge">-${offer.discount_percentage}%</span>
+                                </div>
+                                <button class="favorite-btn favorited" onclick="toggleFavorite(${offer.id}, this); setTimeout(()=>location.reload(), 300);">
+                                    ❤️ Remove from Wishlist
+                                </button>
+                            </div>
+                        `;
+                        container.appendChild(card);
+                    });
+                } else {
+                    container.innerHTML = '<p style="text-align:center; width:100%; color: var(--text-muted);">Your wishlist is empty. Go back to <a href="index.html" style="color: var(--primary);">Discover</a> to find some deals!</p>';
+                }
+            } catch (error) {
+                container.innerHTML = '<p style="text-align:center; width:100%; color: var(--danger);">Error loading wishlist.</p>';
+            }
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Offer Details - Deals Store</title>
+    <link rel="stylesheet" href="/frontend/css/style.css">
+    <style>
+        .single-offer-layout {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 4rem;
+            background: var(--surface);
+            padding: 3rem;
+            border-radius: var(--radius);
+            box-shadow: var(--shadow-md);
+            margin-top: 2rem;
+        }
+        .offer-image-large {
+            border-radius: var(--radius);
+            overflow: hidden;
+            border: 1px solid rgba(0,0,0,0.05);
+        }
+        .offer-info {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+        @media (max-width: 768px) {
+            .single-offer-layout { grid-template-columns: 1fr; gap: 2rem; padding: 1.5rem; }
+        }
+    </style>
+</head>
+<body>
+
+    <nav>
+        <div class="logo"><h2>🛒 Deals.</h2></div>
+        <div class="nav-links">
+            <a href="index.html">Discover</a>
+            <a href="favourit.html">Wishlist</a>
+        </div>
+    </nav>
+
+    <div class="container">
+        <a href="index.html" style="color: var(--text-muted); text-decoration: none; font-weight: 500;">&larr; Back to Discover</a>
+        
+        <div class="single-offer-layout">
+            <div class="offer-image-large">
+                <!-- Fetching the premium Unsplash image -->
+                <img src="https://images.unsplash.com/photo-1618366712010-f4ae9c647dcb?q=80&w=800&auto=format&fit=crop" alt="Product Image" style="width: 100%; height: 100%; object-fit: cover;">
+            </div>
+            
+            <div class="offer-info">
+                <span class="category">Tech</span>
+                <h1 style="font-size: 2.5rem; margin-bottom: 1rem; color: var(--text-dark); letter-spacing: -0.5px;">Sony WH-1000XM5</h1>
+                <p style="color: var(--text-muted); font-size: 1.1rem; margin-bottom: 2rem; line-height: 1.6;">
+                    Industry-leading noise cancellation. 30-hour battery life and ultra-comfortable lightweight design. Experience premium sound quality anywhere.
+                </p>
+                
+                <div class="price-box" style="margin-bottom: 2rem;">
+                    <span class="final-price" style="font-size: 3rem;">$338.30</span>
+                    <span class="old-price" style="font-size: 1.2rem;">$398.00</span>
+                    <span class="badge" style="font-size: 1rem;">-15%</span>
+                </div>
+                
+                <p style="color: var(--danger); font-weight: 600; margin-bottom: 1.5rem; font-size: 0.9rem;">
+                    ⏳ Deal expires: Dec 31, 2026
+                </p>
+                
+                <button class="btn-primary" style="font-size: 1.1rem; padding: 1.2rem;">Add to Cart</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="/frontend/js/app.js"></script>
+</body>
+</html>

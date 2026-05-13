@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Deals Store - Premium</title>
+    <link rel="stylesheet" href="/frontend/css/style.css">
+</head>
+<body>
+
+    <!-- Glassmorphism Navbar -->
+    <nav>
+        <div class="logo">
+            <h2>🛒 Deals.</h2>
+        </div>
+        <div class="nav-links">
+            <a href="index.html">Discover</a>
+            <a href="favourit.html">Wishlist</a>
+            <!-- Fixed Register Link -->
+            <a href="register.html" id="nav-register">Create Account</a>
+            <a href="login.html" id="nav-login">Sign In</a>
+            <span id="nav-welcome"></span>
+            <button id="nav-logout" style="display: none;" onclick="handleLogout()">Sign Out</button>
+        </div>
+    </nav>
+
+    <!-- Modern Hero Section -->
+    <div class="hero">
+        <h1>Curated Deals. Premium Tech.</h1>
+        <p>Discover hand-picked discounts on the world's best products. Save money without compromising on quality.</p>
+    </div>
+
+    <!-- Main Content -->
+    <div class="container">
+        <h2 style="font-size: 1.5rem; margin-bottom: 2rem; color: var(--text-dark);">Trending Today</h2>
+        
+        <div id="offers-container">
+            <p style="text-align: center; width: 100%; color: var(--text-muted);">Fetching exclusive deals...</p>
+        </div>
+    </div>
+
+    <script src="/frontend/js/app.js"></script>
+</body>
+</html>
