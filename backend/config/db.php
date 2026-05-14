@@ -3,7 +3,7 @@
 class Database
 {
     // private $host="mysql-db";
-    private $host="127.0.0.1";
+    private $host="mysql-db";
     private $db_name="deals_store";
     private $username="deals-user";
     private $password="moaazkaff";

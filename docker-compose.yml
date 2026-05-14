@@ -2,8 +2,35 @@ version: '3.8'
 
 services:
 
+  frontend:
+    image: nginx:latest
+    container_name: frontend
+    restart: always
+    ports:
+      - "80:80"
+    volumes:
+      - ./frontend/html:/usr/share/nginx/html
+      - ./frontend/css:/usr/share/nginx/html/css
+      - ./frontend/js:/usr/share/nginx/html/js
+    depends_on:
+      - backend
+    networks:
+      - frontend-net
 
-    # backend: 
+
+  backend:
+    build: ./backend
+    container_name: backend
+    restart: always
+    ports:
+      - "8000:8000"
+    depends_on:
+      mysql-db:
+        condition: service_healthy
+    networks:
+      - backend-net
+      - frontend-net
+
 
   mysql-db:
     image: mysql:latest
@@ -13,20 +40,25 @@ services:
     - MYSQL_USER=deals-user 
     - MYSQL_PASSWORD=moaazkaff
     - MYSQL_DATABASE=deals_store
-    # env_file:
-
     restart: always
     ports:
       - "3306:3306"
     volumes:
       - mysql-volume:/var/lib/mysql
-      - ./database/schema.sql:/docker-entrypoint-initdb.d/schema.sql  
+      - ./database/schema.sql:/docker-entrypoint-initdb.d/schema.sql
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - backend-net
 
 volumes:
   mysql-volume:   
 
 networks:
   backend-net:
-    internal: true
+  frontend-net:
 
       
