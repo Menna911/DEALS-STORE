@@ -22,6 +22,6 @@ cache/
 # Tests
 tests/
 
-# Docker
-Dockerfile
-.dockerignore
+# # Docker
+# Dockerfile
+# .dockerignore
