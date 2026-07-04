@@ -15,7 +15,7 @@ services:
   backend:
     build:
       context: ./backend
-    image: moaaz65/deals-store-backend:v1.0.0 
+    image: moaaz65/deals-store-backend:v1.0.0
     restart: unless-stopped
     ports:
       - "8000:8000"
@@ -43,11 +43,11 @@ services:
       - mysql-volume:/var/lib/mysql
       - ./database/schema.sql:/docker-entrypoint-initdb.d/schema.sql:ro
     healthcheck:
-    test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-uroot", "-proot"]
-    interval: 10s
-    timeout: 5s
-    retries: 10
-    start_period: 60s
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-uroot", "-proot"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 60s
     networks:
       - backend-net
 
