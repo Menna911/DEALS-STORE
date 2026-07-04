@@ -3,6 +3,12 @@ pipeline {
 
     stages {
 
+        stage('Prepare Environment') {
+            steps {
+                bat 'copy .env.example .env'
+            }
+        }
+
         stage('Build Docker Images') {
             steps {
                 bat 'docker compose build'
@@ -11,7 +17,7 @@ pipeline {
 
         stage('Run Containers') {
             steps {
-                bat 'docker compose up -d'
+                bat 'docker compose up -d --wait'
             }
         }
 
