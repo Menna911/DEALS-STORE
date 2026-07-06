@@ -34,13 +34,38 @@ pipeline {
                         "$MYSQL_DATABASE" \
                         "$MYSQL_USER" \
                         "$MYSQL_PASSWORD" > .env
-                        
-                        
+
+
                         ls -l .env
                         '''
                     }
             }
         }
+
+        stage('Validate Required Files'){
+            steps{
+                echo 'Validating required project files...'
+
+                sh '''
+                    [ -f docker-compose.yml ] || { echo "docker-compose.yml not found"; exit 1; }
+                    [ -f backend/Dockerfile ] || { echo "backend Dockerfile not found"; exit 1; }
+                    [ -f frontend/Dockerfile ] || { echo "frontend Dockerfile not found"; exit 1; }
+                    [ -f Jenkinsfile ] || { echo "Jenkinsfile not found"; exit 1; }
+                '''
+            }
+        }
+
+        stage('Validate Docker Compose'){
+            steps{
+                echo 'Validating Docker Compose configuration...'
+
+                sh '''
+                docker compose -f $COMPOSE_FILE config
+                '''
+            }
+        }
+
+
 
         stage('Build Application Images') {
             steps {
