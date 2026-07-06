@@ -22,9 +22,23 @@ pipeline {
             steps {
                 echo 'Preparing environment...'
 
-                sh '''
-                    cp .env.example .env
-                '''
+                withCredentials([
+                    string(credentialsId: 'MYSQL_ROOT_PASSWORD', variable: 'MYSQL_ROOT_PASSWORD'),
+                    string(credentialsId: 'MYSQL_DATABASE', variable: 'MYSQL_DATABASE'),
+                    string(credentialsId: 'MYSQL_USER', variable: 'MYSQL_USER'),
+                    string(credentialsId: 'MYSQL_PASSWORD', variable: 'MYSQL_PASSWORD')
+                ]) {
+                        sh '''
+                        cat > .env <<EOF
+                        MYSQL_ROOT_PASSWORD=$MYSQL_ROOT_PASSWORD
+                        MYSQL_DATABASE=$MYSQL_DATABASE
+                        MYSQL_USER=$MYSQL_USER
+                        MYSQL_PASSWORD=$MYSQL_PASSWORD
+                        EOF
+
+                        ls -l .env
+                        '''
+                    }
             }
         }
 
@@ -60,18 +74,17 @@ pipeline {
     }
 
     post {
-
         success {
             echo 'Build completed successfully.'
         }
-
+    
         failure {
             echo 'Build failed.'
         }
-
+    
         always {
+            sh 'rm -f .env'
             echo 'Pipeline execution finished.'
         }
-
     }
 }
