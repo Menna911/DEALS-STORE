@@ -21,10 +21,8 @@ pipeline {
         stage('Prepare Environment') {
             steps {
                 echo 'Preparing environment...'
-                
+
                 sh '''
-                    // pwd
-                    // ls -la
                     cp .env.example .env
                 '''
             }
