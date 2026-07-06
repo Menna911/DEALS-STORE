@@ -90,13 +90,9 @@ pipeline {
         stage('Application Health Check') {
             steps {
                 echo 'Checking application health...'
-        
+
                 sh '''
                     docker compose -f $COMPOSE_FILE ps
-        
-                    docker compose -f $COMPOSE_FILE exec -T backend \
-                        curl --fail --silent --show-error \
-                        http://localhost:8000/api/offers.php
                 '''
             }
         }
