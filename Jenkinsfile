@@ -24,7 +24,7 @@ pipeline {
         stage('Run Containers') {
             steps {
                 sh '''
-                    docker compose up -d --wait
+                    docker compose up -d 
                 '''
             }
         }
@@ -33,6 +33,8 @@ pipeline {
             steps {
                 sh '''
                     docker ps
+                    curl -f http://localhost || exit 1
+                    curl -f http://localhost:8000/api/offers.php || exit 1
                 '''
             }
         }
