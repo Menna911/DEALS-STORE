@@ -29,13 +29,13 @@ pipeline {
                     string(credentialsId: 'MYSQL_PASSWORD', variable: 'MYSQL_PASSWORD')
                 ]) {
                         sh '''
-                        cat > .env <<EOF
-                        MYSQL_ROOT_PASSWORD=$MYSQL_ROOT_PASSWORD
-                        MYSQL_DATABASE=$MYSQL_DATABASE
-                        MYSQL_USER=$MYSQL_USER
-                        MYSQL_PASSWORD=$MYSQL_PASSWORD
-                        EOF
-
+                        printf "MYSQL_ROOT_PASSWORD=%s\nMYSQL_DATABASE=%s\nMYSQL_USER=%s\nMYSQL_PASSWORD=%s\n" \
+                        "$MYSQL_ROOT_PASSWORD" \
+                        "$MYSQL_DATABASE" \
+                        "$MYSQL_USER" \
+                        "$MYSQL_PASSWORD" > .env
+                        
+                        
                         ls -l .env
                         '''
                     }
@@ -77,11 +77,11 @@ pipeline {
         success {
             echo 'Build completed successfully.'
         }
-    
+
         failure {
             echo 'Build failed.'
         }
-    
+
         always {
             sh 'rm -f .env'
             echo 'Pipeline execution finished.'
