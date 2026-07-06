@@ -87,14 +87,13 @@ pipeline {
             }
         }
 
-        stage('Verify Running Containers') {
+        stage('Application Health Check') {
             steps {
-                echo 'Verifying running containers...'
-
-                sh '''
+                    sh '''
                     docker compose -f $COMPOSE_FILE ps
-                '''
-            }
+                    curl --fail --silent --show-error http://localhost:8000/api/offers.php
+                    '''
+                }
         }
     }
 
