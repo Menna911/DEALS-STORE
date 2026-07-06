@@ -5,25 +5,25 @@ pipeline {
 
         stage('Prepare Environment') {
             steps {
-                bat 'copy .env.example .env'
+                sh 'cp .env.example .env'
             }
         }
 
         stage('Build Docker Images') {
             steps {
-                bat 'docker compose build'
+                sh 'docker compose build'
             }
         }
 
         stage('Run Containers') {
             steps {
-                bat 'docker compose up -d --wait'
+                sh 'docker compose up -d --wait'
             }
         }
 
         stage('Show Running Containers') {
             steps {
-                bat 'docker ps'
+                sh 'docker ps'
             }
         }
     }
