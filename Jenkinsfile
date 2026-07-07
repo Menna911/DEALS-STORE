@@ -77,6 +77,26 @@ pipeline {
             }
         }
 
+        stage('Login to Docker Hub') {
+            steps {
+                echo 'Logging in to Docker Hub...'
+
+                withCredentials([
+                    usernamePassword(
+                    credentialsId: 'dockerhub',
+                    usernameVariable: 'DOCKERHUB_USERNAME',
+                    passwordVariable: 'DOCKERHUB_TOKEN'
+                )
+                ]){
+                sh '''
+                    echo "$DOCKERHUB_TOKEN" | docker login \
+                        --username "$DOCKERHUB_USERNAME" \
+                        --password-stdin
+                '''
+                }
+            }
+        }
+
         stage('Start Application Stack') {
             steps {
                 echo 'Starting application stack...'
