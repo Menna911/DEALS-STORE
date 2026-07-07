@@ -10,6 +10,7 @@ pipeline {
         COMPOSE_FILE = 'docker-compose.yml'
         DOCKERHUB_USERNAME = 'moaaz65'
         IMAGE_TAG = "${BUILD_NUMBER}"
+        IMAGE_LATEST = "latest"
     }
 
     stages {
@@ -99,14 +100,36 @@ pipeline {
             }
         }
 
-        stage('Push Docker Images'){
+        stage('Tag Docker Images'){
             steps{
+                echo 'Tagging Docker images...'
+
+                sh '''
+                docker tag ${DOCKERHUB_USERNAME}/deals-store-frontend:${IMAGE_TAG} \
+                       ${DOCKERHUB_USERNAME}/deals-store-frontend:${IMAGE_LATEST}
+
+                docker tag ${DOCKERHUB_USERNAME}/deals-store-backend:${IMAGE_TAG} \
+                       ${DOCKERHUB_USERNAME}/deals-store-backend:${IMAGE_LATEST}
+
+                docker tag ${DOCKERHUB_USERNAME}/deals-store-mysql:${IMAGE_TAG} \
+                       ${DOCKERHUB_USERNAME}/deals-store-mysql:${IMAGE_LATEST}
+                '''
+            }
+        }
+
+        stage('Push Docker Images') {
+            steps {
                 echo 'Pushing Docker images to Docker Hub...'
 
                 sh '''
                 docker push ${DOCKERHUB_USERNAME}/deals-store-frontend:${IMAGE_TAG}
+                docker push ${DOCKERHUB_USERNAME}/deals-store-frontend:latest
+
                 docker push ${DOCKERHUB_USERNAME}/deals-store-backend:${IMAGE_TAG}
+                docker push ${DOCKERHUB_USERNAME}/deals-store-backend:latest
+
                 docker push ${DOCKERHUB_USERNAME}/deals-store-mysql:${IMAGE_TAG}
+                docker push ${DOCKERHUB_USERNAME}/deals-store-mysql:latest
                 '''
             }
         }
