@@ -172,8 +172,11 @@ pipeline {
 
         always {
             sh '''
-                rm -f .env
+                docker compose -f $COMPOSE_FILE down -v || true
+                
                 docker logout || true
+                
+                rm -f .env
             '''
             echo 'Pipeline execution finished.'
         }
