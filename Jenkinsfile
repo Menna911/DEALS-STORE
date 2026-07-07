@@ -8,6 +8,8 @@ pipeline {
 
     environment {
         COMPOSE_FILE = 'docker-compose.yml'
+        DOCKERHUB_USERNAME = 'moaaz65'
+        IMAGE_TAG = "${BUILD_NUMBER}"
     }
 
     stages {
@@ -84,12 +86,12 @@ pipeline {
                 withCredentials([
                     usernamePassword(
                     credentialsId: 'Docker_Access_Token',
-                    usernameVariable: 'DOCKERHUB_USERNAME',
-                    passwordVariable: 'DOCKERHUB_TOKEN'
+                    usernameVariable: 'DOCKER_USERNAME',
+                    passwordVariable: 'DOCKER_TOKEN'
                 )
                 ]){
                 sh '''
-                    echo "$DOCKERHUB_TOKEN" | docker login \
+                    echo "$DOCKER_TOKEN" | docker login \
                         --username "$DOCKERHUB_USERNAME" \
                         --password-stdin
                 '''
@@ -102,9 +104,9 @@ pipeline {
                 echo 'Pushing Docker images to Docker Hub...'
 
                 sh '''
-                docker push moaaz65/deals-store-frontend:v1.0.0
-                docker push moaaz65/deals-store-backend:v1.0.0
-                docker push moaaz65/deals-store-mysql:v1.0.0
+                docker push ${DOCKERHUB_USERNAME}/deals-store-frontend:${IMAGE_TAG}
+                docker push ${DOCKERHUB_USERNAME}/deals-store-backend:${IMAGE_TAG}
+                docker push ${DOCKERHUB_USERNAME}/deals-store-mysql:${IMAGE_TAG}
                 '''
             }
         }

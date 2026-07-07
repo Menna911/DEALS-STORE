@@ -3,7 +3,7 @@ services:
   frontend:
     build:
       context: ./frontend
-    image: moaaz65/deals-store-frontend:v1.0.0
+    image: ${DOCKERHUB_USERNAME}/deals-store-frontend:${IMAGE_TAG}
     restart: unless-stopped
     ports:
       - "80:80"
@@ -15,7 +15,7 @@ services:
   backend:
     build:
       context: ./backend
-    image: moaaz65/deals-store-backend:v1.0.0
+    image: ${DOCKERHUB_USERNAME}/deals-store-backend:${IMAGE_TAG}
     restart: unless-stopped
     ports:
       - "8000:8000"
@@ -34,7 +34,7 @@ services:
   mysql-db:
     build:
       context: ./database
-    image: moaaz65/deals-store-mysql:v1.0.0
+    image: ${DOCKERHUB_USERNAME}/deals-store-mysql:${IMAGE_TAG}
     restart: unless-stopped
     environment:
       MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
