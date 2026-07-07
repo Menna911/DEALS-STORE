@@ -97,6 +97,18 @@ pipeline {
             }
         }
 
+        stage('Push Docker Images'){
+            steps{
+                echo 'Pushing Docker images to Docker Hub...'
+
+                sh '''
+                docker push moaaz65/deals-store-frontend:v1.0.0
+                docker push moaaz65/deals-store-backend:v1.0.0
+                docker push moaaz65/deals-store-mysql:v1.0.0
+                '''
+            }
+        }
+
         stage('Start Application Stack') {
             steps {
                 echo 'Starting application stack...'
