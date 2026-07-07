@@ -123,13 +123,13 @@ pipeline {
 
                 sh '''
                 docker push ${DOCKERHUB_USERNAME}/deals-store-frontend:${IMAGE_TAG}
-                docker push ${DOCKERHUB_USERNAME}/deals-store-frontend:latest
+                docker push ${DOCKERHUB_USERNAME}/deals-store-frontend:${IMAGE_LATEST}
 
                 docker push ${DOCKERHUB_USERNAME}/deals-store-backend:${IMAGE_TAG}
-                docker push ${DOCKERHUB_USERNAME}/deals-store-backend:latest
+                docker push ${DOCKERHUB_USERNAME}/deals-store-backend:${IMAGE_LATEST}
 
                 docker push ${DOCKERHUB_USERNAME}/deals-store-mysql:${IMAGE_TAG}
-                docker push ${DOCKERHUB_USERNAME}/deals-store-mysql:latest
+                docker push ${DOCKERHUB_USERNAME}/deals-store-mysql:${IMAGE_LATEST}
                 '''
             }
         }
