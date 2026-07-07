@@ -11,6 +11,9 @@ pipeline {
         DOCKERHUB_USERNAME = 'moaaz65'
         IMAGE_TAG = "${BUILD_NUMBER}"
         IMAGE_LATEST = "latest"
+        FRONTEND_IMAGE = "${DOCKERHUB_USERNAME}/deals-store-frontend"
+        BACKEND_IMAGE = "${DOCKERHUB_USERNAME}/deals-store-backend"
+        MYSQL_IMAGE = "${DOCKERHUB_USERNAME}/deals-store-mysql"
     }
 
     stages {
@@ -93,7 +96,7 @@ pipeline {
                 ]){
                 sh '''
                     echo "$DOCKER_TOKEN" | docker login \
-                        --username "$DOCKERHUB_USERNAME" \
+                        --username "$DOCKER_USERNAME" \
                         --password-stdin
                 '''
                 }
@@ -105,14 +108,14 @@ pipeline {
                 echo 'Tagging Docker images...'
 
                 sh '''
-                docker tag ${DOCKERHUB_USERNAME}/deals-store-frontend:${IMAGE_TAG} \
-                       ${DOCKERHUB_USERNAME}/deals-store-frontend:${IMAGE_LATEST}
+                docker tag ${FRONTEND_IMAGE}:${IMAGE_TAG} \
+                       ${FRONTEND_IMAGE}:${IMAGE_LATEST}
 
-                docker tag ${DOCKERHUB_USERNAME}/deals-store-backend:${IMAGE_TAG} \
-                       ${DOCKERHUB_USERNAME}/deals-store-backend:${IMAGE_LATEST}
+                docker tag ${BACKEND_IMAGE}:${IMAGE_TAG} \
+                       ${BACKEND_IMAGE}:${IMAGE_LATEST}
 
-                docker tag ${DOCKERHUB_USERNAME}/deals-store-mysql:${IMAGE_TAG} \
-                       ${DOCKERHUB_USERNAME}/deals-store-mysql:${IMAGE_LATEST}
+                docker tag ${MYSQL_IMAGE}:${IMAGE_TAG} \
+                       ${MYSQL_IMAGE}:${IMAGE_LATEST}
                 '''
             }
         }
@@ -122,14 +125,14 @@ pipeline {
                 echo 'Pushing Docker images to Docker Hub...'
 
                 sh '''
-                docker push ${DOCKERHUB_USERNAME}/deals-store-frontend:${IMAGE_TAG}
-                docker push ${DOCKERHUB_USERNAME}/deals-store-frontend:${IMAGE_LATEST}
+                docker push ${FRONTEND_IMAGE}:${IMAGE_TAG}
+                docker push ${FRONTEND_IMAGE}:${IMAGE_LATEST}
 
-                docker push ${DOCKERHUB_USERNAME}/deals-store-backend:${IMAGE_TAG}
-                docker push ${DOCKERHUB_USERNAME}/deals-store-backend:${IMAGE_LATEST}
+                docker push ${BACKEND_IMAGE}:${IMAGE_TAG}
+                docker push ${BACKEND_IMAGE}:${IMAGE_LATEST}
 
-                docker push ${DOCKERHUB_USERNAME}/deals-store-mysql:${IMAGE_TAG}
-                docker push ${DOCKERHUB_USERNAME}/deals-store-mysql:${IMAGE_LATEST}
+                docker push ${MYSQL_IMAGE}:${IMAGE_TAG}
+                docker push ${MYSQL_IMAGE}:${IMAGE_LATEST}
                 '''
             }
         }
@@ -168,7 +171,10 @@ pipeline {
         }
 
         always {
-            sh 'rm -f .env'
+            sh '''
+                rm -f .env
+                docker logout || true
+            '''
             echo 'Pipeline execution finished.'
         }
     }
