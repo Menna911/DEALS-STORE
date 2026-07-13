@@ -14,6 +14,7 @@ pipeline {
         FRONTEND_IMAGE = "${DOCKERHUB_USERNAME}/deals-store-frontend"
         BACKEND_IMAGE = "${DOCKERHUB_USERNAME}/deals-store-backend"
         MYSQL_IMAGE = "${DOCKERHUB_USERNAME}/deals-store-mysql"
+        LAST_SUCCESS_FILE = '/var/lib/jenkins/deals-store-last-success.txt'
     }
 
     stages {
@@ -159,6 +160,14 @@ pipeline {
                 '''
             }
         }
+        stage('Record Successful Deployment') {
+    steps {
+        echo 'Recording last successful build tag...'
+        sh '''
+            echo "${IMAGE_TAG}" > ${LAST_SUCCESS_FILE}
+        '''
+    }
+  }
     }
 
    post {
@@ -167,16 +176,59 @@ pipeline {
     }
 
     failure {
-        echo 'Build failed.'
+        script {
+            echo 'Build failed. Attempting automated rollback...'
+
+            def lastGoodTag = sh(
+                script: "cat ${LAST_SUCCESS_FILE} 2>/dev/null || true",
+                returnStdout: true
+            ).trim()
+
+            if (lastGoodTag && lastGoodTag != "${IMAGE_TAG}") {
+                echo "Rolling back to last successful tag: ${lastGoodTag}"
+
+                withCredentials([
+                    usernamePassword(
+                        credentialsId: 'Docker_Access_Token',
+                        usernameVariable: 'DOCKER_USERNAME',
+                        passwordVariable: 'DOCKER_TOKEN'
+                    )
+                ]) {
+                    sh """
+                        echo "\$DOCKER_TOKEN" | docker login --username "\$DOCKER_USERNAME" --password-stdin
+
+                        docker pull ${FRONTEND_IMAGE}:${lastGoodTag}
+                        docker pull ${BACKEND_IMAGE}:${lastGoodTag}
+                        docker pull ${MYSQL_IMAGE}:${lastGoodTag}
+
+                        docker tag ${FRONTEND_IMAGE}:${lastGoodTag} ${FRONTEND_IMAGE}:latest
+                        docker tag ${BACKEND_IMAGE}:${lastGoodTag} ${BACKEND_IMAGE}:latest
+                        docker tag ${MYSQL_IMAGE}:${lastGoodTag} ${MYSQL_IMAGE}:latest
+
+                        docker push ${FRONTEND_IMAGE}:latest
+                        docker push ${BACKEND_IMAGE}:latest
+                        docker push ${MYSQL_IMAGE}:latest
+                    """
+                }
+
+                sh '''
+                    docker compose -f $COMPOSE_FILE up -d --wait
+                    docker compose -f $COMPOSE_FILE ps
+                '''
+
+                echo "Rollback completed. Service restored to tag ${lastGoodTag}."
+            } else {
+                echo 'No previous successful tag found. Manual intervention required.'
+            }
+        }
     }
 
     always {
         sh '''
             docker logout || true
-
             rm -f .env
         '''
         echo 'Pipeline execution finished.'
     }
+} 
 }
-    }
