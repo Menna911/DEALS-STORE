@@ -161,24 +161,23 @@ pipeline {
         }
     }
 
-    post {
-        success {
-            echo 'Build completed successfully.'
-        }
+   post {
+    success {
+        echo 'Build completed successfully.'
+    }
 
-        failure {
-            echo 'Build failed.'
-        }
+    failure {
+        echo 'Build failed.'
+    }
 
-        always {
-            sh '''
-                docker compose -f $COMPOSE_FILE down -v || true
-                
-                docker logout || true
-                
-                rm -f .env
-            '''
-            echo 'Pipeline execution finished.'
-        }
+    always {
+        sh '''
+            docker logout || true
+
+            rm -f .env
+        '''
+        echo 'Pipeline execution finished.'
+    }
+}
     }
 }
