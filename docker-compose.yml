@@ -1,12 +1,25 @@
 services:
 
+  reverse-proxy:
+    build:
+      context: ./reverse-proxy
+    image: ${DOCKERHUB_USERNAME}/deals-store-reverse-proxy:${IMAGE_TAG}
+    restart: unless-stopped
+    ports:
+      - "80:80"
+    depends_on:
+      - frontend
+      - backend
+    networks:
+      - frontend-net
+
   frontend:
     build:
       context: ./frontend
     image: ${DOCKERHUB_USERNAME}/deals-store-frontend:${IMAGE_TAG}
     restart: unless-stopped
-    ports:
-      - "80:80"
+    expose:
+      - "80"
     depends_on:
       - backend
     networks:
@@ -17,8 +30,8 @@ services:
       context: ./backend
     image: ${DOCKERHUB_USERNAME}/deals-store-backend:${IMAGE_TAG}
     restart: unless-stopped
-    ports:
-      - "8000:8000"
+    expose:
+      - "8000"
     environment:
       MYSQL_HOST: mysql-db
       MYSQL_DATABASE: ${MYSQL_DATABASE}
