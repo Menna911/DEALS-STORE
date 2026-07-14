@@ -1,1 +1,27 @@
-Dockerfile
+# Git
+.git
+.gitignore
+
+# Documentation
+README.md
+
+# IDE
+.vscode
+.idea
+
+# macOS
+.DS_Store
+
+# Logs
+*.log
+
+# Temporary files
+tmp/
+cache/
+
+# Tests
+tests/
+
+# # Docker
+# Dockerfile
+# .dockerignore

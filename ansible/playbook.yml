@@ -1,0 +1,8 @@
+---
+- name: Configure Deals Store Server
+  hosts: web
+  become: true
+
+  roles:
+    - common
+    - deploy

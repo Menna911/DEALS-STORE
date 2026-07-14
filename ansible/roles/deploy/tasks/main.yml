@@ -1,0 +1,7 @@
+---
+- name: Clone or update repository
+  ansible.builtin.git:
+    repo: "https://github.com/Moaazkaff/DEALS-STORE.git"
+    dest: /home/ec2-user/DEALS-STORE
+    version: devops
+    update: yes

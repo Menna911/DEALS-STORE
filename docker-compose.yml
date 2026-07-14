@@ -1,64 +1,73 @@
-version: '3.8'
-
 services:
 
-  frontend:
-    image: nginx:latest
-    container_name: frontend
-    restart: always
+  reverse-proxy:
+    build:
+      context: ./reverse-proxy
+    image: ${DOCKERHUB_USERNAME}/deals-store-reverse-proxy:${IMAGE_TAG}
+    restart: unless-stopped
     ports:
       - "80:80"
-    volumes:
-      - ./frontend/html:/usr/share/nginx/html
-      - ./frontend/css:/usr/share/nginx/html/css
-      - ./frontend/js:/usr/share/nginx/html/js
+    depends_on:
+      - frontend
+      - backend
+    networks:
+      - frontend-net
+
+  frontend:
+    build:
+      context: ./frontend
+    image: ${DOCKERHUB_USERNAME}/deals-store-frontend:${IMAGE_TAG}
+    restart: unless-stopped
+    expose:
+      - "80"
     depends_on:
       - backend
     networks:
       - frontend-net
 
-
   backend:
-    build: ./backend
-    container_name: backend
-    restart: always
-    ports:
-      - "8000:8000"
+    build:
+      context: ./backend
+    image: ${DOCKERHUB_USERNAME}/deals-store-backend:${IMAGE_TAG}
+    restart: unless-stopped
+    expose:
+      - "8000"
+    environment:
+      MYSQL_HOST: mysql-db
+      MYSQL_DATABASE: ${MYSQL_DATABASE}
+      MYSQL_USER: ${MYSQL_USER}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
     depends_on:
       mysql-db:
         condition: service_healthy
     networks:
-      - backend-net
       - frontend-net
-
+      - backend-net
 
   mysql-db:
-    image: mysql:latest
-    container_name: mysql-db
+    build:
+      context: ./database
+    image: ${DOCKERHUB_USERNAME}/deals-store-mysql:${IMAGE_TAG}
+    restart: unless-stopped
     environment:
-    - MYSQL_ROOT_PASSWORD=root 
-    - MYSQL_USER=deals-user 
-    - MYSQL_PASSWORD=moaazkaff
-    - MYSQL_DATABASE=deals_store
-    restart: always
-    ports:
-      - "3306:3306"
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      MYSQL_DATABASE: ${MYSQL_DATABASE}
+      MYSQL_USER: ${MYSQL_USER}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
     volumes:
       - mysql-volume:/var/lib/mysql
-      - ./database/schema.sql:/docker-entrypoint-initdb.d/schema.sql
     healthcheck:
-      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-uroot", "-proot"]
       interval: 10s
       timeout: 5s
-      retries: 5
+      retries: 10
+      start_period: 60s
     networks:
       - backend-net
 
 volumes:
-  mysql-volume:   
+  mysql-volume:
 
 networks:
-  backend-net:
   frontend-net:
-
-      
+  backend-net:
